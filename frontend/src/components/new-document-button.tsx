@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CircleArrowUpIcon, Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
-import PDFViewer from "./pdf-viewer"
 
 export  function UploadButton() {
 
@@ -21,12 +20,11 @@ export  function UploadButton() {
    if (file) {
       console.log("Archivo seleccionado:", file.name)
       
-      // 1. Preparamos los datos
-      const formData = new FormData(); // <--- OJO: Faltaba inicializarlo
+    
+      const formData = new FormData(); 
       formData.append("file", file);
 
       try {
-        // 2. Enviamos al servidor
         const response = await fetch("/api/upload", {
           method: "POST",
           body: formData,
@@ -36,14 +34,11 @@ export  function UploadButton() {
           throw new Error("Error en la subida")
         }
 
-        // --- AQUÍ ESTÁ LA MAGIA QUE FALTABA ---
         
-        // 3. Leemos el JSON que nos devuelve la API
-        // Tu API responde algo como: { message: "Ok", filePath: "/uploads/..." }
         const data = await response.json();
         console.log(data);
         
-        // 4. Extraemos la variable
+     
         const uploadedUrl = data.filePath 
 
         console.log("Archivo guardado en:", uploadedUrl)
@@ -55,7 +50,7 @@ export  function UploadButton() {
 
       } catch (error) {
         console.error("Falló la subida:", error)
-        // Aquí podrías poner un toast.error("Error al subir")
+        
       }
   }
   }

@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "powershell -Command \"mkdir public\\pdfjs -Force; Copy-Item node_modules\\pdfjs-dist\\build\\pdf.worker.min.js public\\pdfjs\\\"\""
   },
   "dependencies": {
+    "@mikecousins/react-pdf": "^8.1.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-scroll-area": "^1.2.10",
@@ -26,6 +28,8 @@
     "react-dom": "19.2.1",
     "react-pdf": "^10.2.0",
     "react-resizable-panels": "^3.0.6",
+    "react-resize-detector": "^12.3.0",
+    "recharts": "^2.15.4",
     "tailwind-merge": "^3.4.0",
     "vaul": "^1.1.2"
   },
