@@ -14,6 +14,8 @@ import { PDFViewerDynamic } from "@/components/pdf-dynamic";
 interface ChatInterfaceProps {
   chatId?: string
   pdfUrl: string
+
+  
 }
 export function CharInterface({ chatId, pdfUrl }: ChatInterfaceProps) {
   const isMobile = useIsMobile();
@@ -30,44 +32,59 @@ export function CharInterface({ chatId, pdfUrl }: ChatInterfaceProps) {
   }
 
   if (isMobile) {
-    return (
-      <div className="relative h-[100dvh] w-full overflow-hidden bg-background">
-        <div className="h-full w-full">
-          <ChatArea />
-        </div>
-
-        <div className="absolute top-4 right-4 z-50">
+  return (
+    <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
+   
+      <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
+       
+        <div className="absolute top-2.5 right-4 z-30">
           <DrawerDemo chatId={chatId} pdfUrl={pdfUrl} />
         </div>
       </div>
-    );
-  }
 
+      <div className="flex-1 overflow-hidden">
+        <ChatArea />
+      </div>
+    </div>
+  );
+}
   return (
 
-    <ResizablePanelGroup 
-      direction="horizontal"
-      className="min-h-screen w-full"
-    >
-      <ResizablePanel defaultSize={50}>
-        <div className="flex h-full items-center justify-center p-6">
-          <ChatArea />
+<ResizablePanelGroup 
+  direction="horizontal"
+  className="h-screen w-full border overflow-hidden" 
+>
+  {/* PANEL 1: CHAT INTERFACE */}
+  <ResizablePanel 
+    defaultSize={40} 
+    minSize={25}
+  >
+  
+    <div className="bg-background">
+      <ChatArea />
+    </div>
+  </ResizablePanel>
 
+  <ResizableHandle withHandle />
+
+  <ResizablePanel 
+    defaultSize={60} 
+    minSize={40}
+  >
+    <div className="h-full w-full overflow-hidden bg-slate-100">
+      {decodedUrl ? (
+        <PDFViewerDynamic 
+          url={decodedUrl} 
+          targetPage={activePage} 
+        />
+      ) : (
+        <div className="flex items-center justify-center h-full text-muted-foreground">
+          No se ha cargado ningún PDF
         </div>
-      </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={50}>
-        <div className="h-full w-full">
-          {decodedUrl ? (
-            <PDFViewerDynamic url={decodedUrl} targetPage={activePage} />
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground">
-              No se ha cargado ningún PDF
-            </div>
-          )}
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+      )}
+    </div>
+  </ResizablePanel>
+</ResizablePanelGroup>
 
 
   )
