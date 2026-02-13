@@ -53,25 +53,6 @@ export function UploadButton() {
           alert("Hubo un error iniciando la ingesta");
         }
 
-        // if (result.success) {
-
-        //   // 3. Redirección
-        //   router.push(`/workspace/${encodeURIComponent(data.name)}`);
-        // } else {
-        //   throw new Error(result.error || "El servidor no pudo leer el archivo");
-        // }
-
-
-
-        // const result = await ingestDocumentAction(data.name, data.size);
-
-
-        // if (result){
-        //   console.log("Se logró guardad en la bd")
-        // }else{
-        //   console.log("no se logro guardar");
-        // }
-
 
         console.log("Archivo guardado en:", data)
         console.log("Redirigiendo al workspace...")
@@ -93,13 +74,13 @@ export function UploadButton() {
 
         if (data.status === 'COMPLETED') {
           setStatus('COMPLETED');
-          clearInterval(interval); // Dejar de preguntar
+          clearInterval(interval); 
         } else if (data.status === 'FAILED') {
           setStatus('ERROR');
           clearInterval(interval);
         }
-        // Si sigue PROCESSING, no hacemos nada, volverá a preguntar en 2s
-      }, 2000); // Preguntar cada 2 segundos
+       
+      }, 2000); 
 
       return () => clearInterval(interval);
     }
@@ -156,7 +137,6 @@ export function UploadButton() {
           </div>
       )}
 
-      {/* INPUT OCULTO SIEMPRE PRESENTE */}
       <Input
         type="file"
         accept=".pdf"
@@ -166,25 +146,7 @@ export function UploadButton() {
       />
 
 
-      {/* <Button
-        className="bg-blue-500  rounded-2xl md:h-16 hover:bg-sky-700"
-        onClick={handleButtonClick}
-      >
-        <Plus className="!w-6 !h-6 md:!w-10 md:!h-10" />
-
-        <span className="font-semibold text-sm md:text-2xl">
-          Subir tu primer PDF.
-        </span>
-      </Button>
-
-
-      <Input
-        type="file"
-        accept=".pdf"
-        ref={fileInputRef}
-        className="hidden"
-        onChange={handleFileChange}
-      /> */}
+ 
 
 
     </>

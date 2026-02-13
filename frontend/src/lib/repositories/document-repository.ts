@@ -3,72 +3,62 @@ import { CreateDocumentDTO } from '@/lib/types/database.types';
 import { InsertChunkDTO } from "@/lib/types/database.types";
 
 
-export class DocumentRepository{
+export class DocumentRepository {
     private db: Pool;
 
-    constructor(pool : Pool){
+    constructor(pool: Pool) {
         this.db = pool;
     }
-    
+
 
     async create(data: CreateDocumentDTO, client?: PoolClient): Promise<string> {
-    const executor = client || this.db;
-    
-    const query = `
+        const executor = client || this.db;
+
+        const query = `
       INSERT INTO documents (file_name, gcs_path, file_size, status) 
       VALUES ($1, $2, $3, 'PENDING') 
       RETURNING id
     `;
-    
-    const res = await executor.query(query, [
-      data.fileName, 
-      data.gcsPath, 
-      data.fileSize
-    ]);
-    
-    return res.rows[0].id;
-  }
+
+        const res = await executor.query(query, [
+            data.fileName,
+            data.gcsPath,
+            data.fileSize
+        ]);
+
+        return res.rows[0].id;
+    }
+
 
 
 async insertChunk(data: InsertChunkDTO, client?: PoolClient): Promise<void> {
-  const executor = client || this.db;
-  
-  if (!data.embedding || data.embedding.length === 0) {
-      console.error("ERROR CRÍTICO: El vector embedding está vacío o es null.");
-      throw new Error("Vector vacío");
-  }
+    const executor = client || this.db;
 
-  const vectorStr = `[${data.embedding.join(',')}]`;
-  const metadataJson = JSON.stringify(data.metadata);
+    // 1. Validación de seguridad
+    if (!data.embedding || data.embedding.length === 0) {
+        console.error("ERROR CRÍTICO: El vector embedding está vacío o es null.");
+        throw new Error("Vector vacío");
+    }
 
+    // 2. Preparar datos para Postgres
+    const vectorStr = `[${data.embedding.join(',')}]`;
+    const metadataJson = JSON.stringify(data.metadata);
 
-  const query = `
-    INSERT INTO document_chunks (document_id, content, embedding, metadata) 
-    VALUES ($1, $2, $3::vector, $4)
-  `;
+    const query = `
+        INSERT INTO document_chunks (document_id, content, embedding, metadata) 
+        VALUES ($1, $2, $3::vector, $4)
+    `;
 
-  try {
-      await executor.query(query, [
-        data.documentId, 
-        data.content, 
-        vectorStr, 
-        metadataJson
-      ]);
-      console.log("Chunk insertado correctamente.");
-  } catch (error: any) {
-      // 4. AQUÍ ESTÁ LA CLAVE
-      console.error(error.message);
-      
-      // Si el error es de dimensiones, te lo dirá aquí
-  
-  }
+    try {
+        await executor.query(query, [
+            data.documentId,
+            data.content,
+            vectorStr,
+            metadataJson
+        ]);
+    } catch (error: any) {
+        console.error("ERROR SQL INSERTANDO CHUNK:", error.message);
+        throw error;
+    }
 }
-
-//   async updateStatus(id: string, status: 'COMPLETED' | 'ERROR', client?: PoolClient) {
-//     const executor = client || this.db;
-//     await executor.query(
-//       "UPDATE documents SET status = $1 WHERE id = $2", 
-//       [status, id]
-//     );
-//   }
 }
