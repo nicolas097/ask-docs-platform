@@ -10,5 +10,9 @@ export const dbService = {
   async insertChunk(client: PoolClient, docId: string, content: string, vector: number[], meta: any) {
     const sql = `INSERT INTO document_chunks (document_id, content, embedding, metadata) VALUES ($1, $2, $3::vector, $4)`;
     await client.query(sql, [docId, content, `[${vector.join(',')}]`, JSON.stringify(meta)]);
+  },
+
+  async insertChat(client: PoolClient, docId: string){
+
   }
 };

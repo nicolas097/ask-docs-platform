@@ -19,8 +19,6 @@ export async function POST(req: Request) {
     apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
   })
 
-
-
   const langchainMessages = await toBaseMessages(messages);
 
   try {
