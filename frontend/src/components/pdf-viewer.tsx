@@ -18,7 +18,7 @@ interface Props {
 
 export default function PDFViewer({ url, targetPage }: Props) {
   const [numPages, setNumPages] = useState<number>();
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { width, ref: containerRef } = useResizeDetector();
   const [debouncedWidth, setDebouncedWidth] = useState(width);
