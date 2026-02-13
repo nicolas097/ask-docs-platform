@@ -13,7 +13,6 @@ if (typeof globalThis.DOMMatrix === 'undefined') {
 
 export async function processGCSFile(fileName: string) {
   try {
-    // --- LÓGICA DE DESCARGA VERIFICADA ---
     const keyPath = path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS!);
     const storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
@@ -23,14 +22,11 @@ export async function processGCSFile(fileName: string) {
     const bucket = storage.bucket(process.env.GCP_BUCKET_NAME!);
     const file = bucket.file(fileName);
 
-    // 1. Descarga real (Buffer)
     const [downloadedBuffer] = await file.download();
-    console.log(`✅ Archivo bajado: ${downloadedBuffer.length} bytes`);
+    console.log(`Archivo bajado: ${downloadedBuffer.length} bytes`);
 
-    // 2. Convertir para LangChain (Fix del Blob)
     const blob = new Blob([new Uint8Array(downloadedBuffer)]);
 
-    // 3. Cargar y dividir
     const loader = new PDFLoader(blob, { splitPages: true });
     const docs = await loader.load();
 
@@ -42,7 +38,7 @@ export async function processGCSFile(fileName: string) {
     return await splitter.splitDocuments(docs);
     
   } catch (error) {
-    console.error("❌ Error en pdf-service:", error);
+    console.error("Error en pdf-service:", error);
     throw error;
   }
 }
