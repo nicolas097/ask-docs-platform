@@ -9,6 +9,7 @@ out/
 build/
 dist/
 
+
 # --- Variables de Entorno (SEGURIDAD CRÍTICA) ---
 .env
 .env.local
@@ -23,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 Thumbs.db
+
+google-key.json

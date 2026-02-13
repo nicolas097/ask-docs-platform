@@ -1,14 +1,17 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CircleArrowUpIcon, Plus } from "lucide-react"
+import { CircleArrowUpIcon, Download, Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
+import {downloadFileFromGCSAction} from "@/app/actions/donwload"
+import {ingestDocumentAction} from "@/app/actions/ingest"
 
-export  function UploadButton() {
+export function UploadButton() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [status, setStatus] = useState<string>('');
   const router = useRouter();
 
   const handleButtonClick = () => {
@@ -17,11 +20,11 @@ export  function UploadButton() {
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-   if (file) {
+    if (file) {
       console.log("Archivo seleccionado:", file.name)
-      
-    
-      const formData = new FormData(); 
+
+
+      const formData = new FormData();
       formData.append("file", file);
 
       try {
@@ -34,25 +37,45 @@ export  function UploadButton() {
           throw new Error("Error en la subida")
         }
 
-        
+
         const data = await response.json();
-        console.log(data);
-        
-     
-        const uploadedUrl = data.filePath 
 
-        console.log("Archivo guardado en:", uploadedUrl)
+ // 'data.name' es el nombre que devuelve tu API /api/upload
+      console.log("🔍 Verificando descarga desde el servidor...")
+      const result = await ingestDocumentAction(data.name, data.size);
+
+
+      if (result.success) {
+        console.log(`🏆 Verificado: El servidor leyó ${data.size} bytes.`);
+        
+        // 3. Redirección
+        router.push(`/workspace/${encodeURIComponent(data.name)}`);
+      } else {
+        throw new Error(result.error || "El servidor no pudo leer el archivo");
+      }
+      
+
+
+        // const result = await ingestDocumentAction(data.name, data.size);
+
+
+        // if (result){
+        //   console.log("Se logró guardad en la bd")
+        // }else{
+        //   console.log("no se logro guardar");
+        // }
+
+
+        console.log("Archivo guardado en:", data)
         console.log("Redirigiendo al workspace...")
-        
-        const fakeId = "demo-1"
 
-        router.push(`/workspace/chat/${fakeId}?url=${encodeURIComponent(uploadedUrl)}`)
+     
 
       } catch (error) {
         console.error("Falló la subida:", error)
-        
+
       }
-  }
+    }
   }
 
   return (
