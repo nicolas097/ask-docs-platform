@@ -4,29 +4,38 @@ import pool from '@/lib/db';
 import { processGCSFile } from '@/lib/services/pdf-service';
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { TaskType } from "@google/generative-ai";
-import {DocumentRepository} from "@/lib/repositories/document-repository"
+import { DocumentRepository } from "@/lib/repositories/document-repository"
 import { aiService } from '@/lib/services/ai-service';
+import { ChatRepository } from "@/lib/repositories/chat-repository"
+
 
 export async function ingestDocumentAction(fileName: string, size: number) {
 
   // llamamos a la clase repositorioa 
 
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN')
-  const docRepo = new DocumentRepository(pool);
-    ;
+    const docRepo = new DocumentRepository(pool);
+    const chatRepo = new ChatRepository(pool);
     console.log("Insertando");
 
 
     console.log("2. Llamando al repo...");
 
     const docId = await docRepo.create({
-      fileName: fileName,      // Cambiado de fileName a name (según el DTO)
-      fileSize: size,          // Ahora pasamos el tamaño que recibes por parámetro
-      gcsPath: fileName    // O la ruta que definas en GCS
+      fileName: fileName,
+      fileSize: size,
+      gcsPath: fileName
     }, client);
+
+    const chatId = await chatRepo.create({
+      title: `${fileName}`,
+      documentId: docId
+    }, client)
+    await client.query('COMMIT');
+
 
     fetch('http://localhost:3000/api/workers/process-pdf', {
       method: 'POST',
@@ -37,11 +46,9 @@ export async function ingestDocumentAction(fileName: string, size: number) {
     }).catch(err => {
       console.error("Error al disparar el worker:", err);
     });
-    console.log("No ha llamado a ninugna api")
 
-    await client.query('COMMIT');
 
-    return { success: true, docId: docId};
+    return { success: true, docId: docId, chatId: chatId };
 
   } catch (error: any) {
     await client.query('ROLLBACK');

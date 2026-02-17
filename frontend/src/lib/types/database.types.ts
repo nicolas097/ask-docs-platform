@@ -7,10 +7,7 @@ export interface CreateDocumentDTO {
   gcsPath: string;
 }
 
-export interface CreateChatDTO {
-  documentId: string; 
-  title?: string;
-}
+
 
 export interface InsertChunkDTO {
   documentId: string;
@@ -20,4 +17,17 @@ export interface InsertChunkDTO {
     pageNumber: number;
     [key: string]: any;
   };
+}
+
+
+export interface CreateChatDTO {
+  title: string;
+  userId?: string; 
+  documentId?: string;
+}
+
+export interface CreateMessageDTO {
+  chatId: string;
+  role: 'user' | 'assistant';
+  content: string;
 }

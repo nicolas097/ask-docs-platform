@@ -13,6 +13,7 @@ export function UploadButton() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState<string>('IDLE');
   const [docId, setDocId] = useState<string | null>(null);
+  const [chatId, setChatId] = useState<string | null>(null);
   const router = useRouter();
 
   const handleButtonClick = () => {
@@ -46,7 +47,8 @@ export function UploadButton() {
         const result = await ingestDocumentAction(data.name, data.size);
         if (result.success) {
           setDocId(result.docId || null);
-          setStatus('PROCESSING'); // ¡Aquí empieza la espera visual!
+           setStatus('PROCESSING');
+           setChatId(result.chatId || null);
         } else {
           // Aquí TypeScript sabe que result tiene "error"
           console.error(result.error);
@@ -70,11 +72,16 @@ export function UploadButton() {
     if (status === 'PROCESSING' && docId) {
       const interval = setInterval(async () => {
         const res = await fetch(`/api/documents/${docId}/status`);
+        console.log(res);
         const data = await res.json();
+        console.log(data);
 
         if (data.status === 'COMPLETED') {
           setStatus('COMPLETED');
-          clearInterval(interval); 
+          clearInterval(interval);
+          router.push(`/workspace/chat/${chatId}`);
+           
+           
         } else if (data.status === 'FAILED') {
           setStatus('ERROR');
           clearInterval(interval);
@@ -117,7 +124,7 @@ export function UploadButton() {
           </div>
       )}
 
-      {status === 'COMPLETED' && (
+      {/* {status === 'COMPLETED' && (
           <div className="flex flex-col items-center text-green-600">
              <CheckCircle className="h-12 w-12 mb-2" />
              <span className="font-bold text-xl">¡Listo! Documento procesado.</span>
@@ -125,7 +132,7 @@ export function UploadButton() {
                 Subir otro
              </Button>
           </div>
-      )}
+      )} */}
 
       {status === 'ERROR' && (
           <div className="text-red-500 flex flex-col items-center">
@@ -144,11 +151,7 @@ export function UploadButton() {
         className="hidden"
         onChange={handleFileChange}
       />
-
-
- 
-
-
+  
     </>
   )
 }

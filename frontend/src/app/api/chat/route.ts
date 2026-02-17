@@ -8,13 +8,9 @@ export const maxDuration = 15;
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
 
-  // const result = streamText({
-  //   model: google("gemini-2.5-flash"),
-  //   messages: await convertToModelMessages(messages),
-  // });
 
   const modelAi = new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash",
     maxOutputTokens: 2048,
     apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
   })
@@ -37,11 +33,4 @@ export async function POST(req: Request) {
   }
 
 
-
-  //   const stream = await modelAi.stream(langchainMessages);
-
-
-  //  return createUIMessageStreamResponse({
-  //     stream: toUIMessageStream(stream),
-  //   });
 }
