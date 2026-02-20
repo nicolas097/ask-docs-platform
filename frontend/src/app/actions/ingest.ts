@@ -7,18 +7,19 @@ import { TaskType } from "@google/generative-ai";
 import { DocumentRepository } from "@/lib/repositories/document-repository"
 import { aiService } from '@/lib/services/ai-service';
 import { ChatRepository } from "@/lib/repositories/chat-repository"
+import {chatRepo} from "@/lib/repositories/instances"
 
 
 export async function ingestDocumentAction(fileName: string, size: number) {
 
   // llamamos a la clase repositorioa 
 
-  const client = await pool.connect();
+    const client = await pool.connect();
 
   try {
     await client.query('BEGIN')
     const docRepo = new DocumentRepository(pool);
-    const chatRepo = new ChatRepository(pool);
+    //const chatRepo = new ChatRepository(pool);
     console.log("Insertando");
 
 
@@ -33,7 +34,8 @@ export async function ingestDocumentAction(fileName: string, size: number) {
     const chatId = await chatRepo.create({
       title: `${fileName}`,
       documentId: docId
-    }, client)
+    }, client);
+
     await client.query('COMMIT');
 
 

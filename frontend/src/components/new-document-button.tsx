@@ -124,15 +124,13 @@ export function UploadButton() {
           </div>
       )}
 
-      {/* {status === 'COMPLETED' && (
+      {status === 'COMPLETED' && (
           <div className="flex flex-col items-center text-green-600">
              <CheckCircle className="h-12 w-12 mb-2" />
              <span className="font-bold text-xl">¡Listo! Documento procesado.</span>
-             <Button variant="outline" onClick={() => setStatus('IDLE')} className="mt-4">
-                Subir otro
-             </Button>
+    
           </div>
-      )} */}
+      )}
 
       {status === 'ERROR' && (
           <div className="text-red-500 flex flex-col items-center">

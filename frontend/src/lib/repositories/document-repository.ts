@@ -1,18 +1,14 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool, PoolClient } from "pg";
 import { CreateDocumentDTO } from '@/lib/types/database.types';
 import { InsertChunkDTO } from "@/lib/types/database.types";
+import { pool as defaultPool } from "@/lib/db";
+import { BaseRepository } from "@/lib/repositories/base-repository";
 
+export class DocumentRepository extends BaseRepository {
 
-export class DocumentRepository {
-    private db: Pool;
-
-    constructor(pool: Pool) {
-        this.db = pool;
-    }
 
 
     async create(data: CreateDocumentDTO, client?: PoolClient): Promise<string> {
-        const executor = client || this.db;
 
         const query = `
       INSERT INTO documents (file_name, gcs_path, file_size, status) 
@@ -20,19 +16,21 @@ export class DocumentRepository {
       RETURNING id
     `;
 
-        const res = await executor.query(query, [
+
+        const res = await this.getExecutor(client).query(
+            query, [
             data.fileName,
             data.gcsPath,
             data.fileSize
-        ]);
-
+        ]
+        )
         return res.rows[0].id;
+
     }
 
 
 
     async insertChunk(data: InsertChunkDTO, client?: PoolClient): Promise<void> {
-        const executor = client || this.db;
 
         if (!data.embedding || data.embedding.length === 0) {
             console.error("ERROR CRÍTICO: El vector embedding está vacío o es null.");
@@ -48,15 +46,49 @@ export class DocumentRepository {
     `;
 
         try {
-            await executor.query(query, [
+
+
+            await this.getExecutor(client).query(
+                query, [
                 data.documentId,
                 data.content,
                 vectorStr,
                 metadataJson
             ]);
+
+
         } catch (error: any) {
             console.error("ERROR SQL INSERTANDO CHUNK:", error.message);
             throw error;
         }
     }
+
+    async getFindGcsPath(docId: string, client?: PoolClient) {
+
+        const query = `SELECT gcs_path FROM documents WHERE id = $1`;
+        const res = await this.getExecutor(client).query(query, [docId]);
+        return res.rows[0];
+    }
+
+    async getDocumentStatus(docId: string, client?: PoolClient): Promise<String> {
+
+        try {
+            const query = 'SELECT status FROM documents WHERE id = $1';
+            const res = await this.getExecutor(client).query(query, [docId]);
+
+            if (res.rows.length === 0) {
+                console.log("Documento no encontrados")
+            }
+
+            const status = res.rows[0].status;
+
+            return status;
+
+        } catch (error) {
+            console.error('Error consultando estado:', error);
+            throw error;
+        }
+
+    }
+
 }

@@ -8,9 +8,9 @@ export const pool =
   new Pool({
     connectionString: process.env.DATABASE_URL,
     // Configuraciones Enterprise:
-    max: 20,              // Máximo de conexiones simultáneas
-    idleTimeoutMillis: 30000, // Tiempo para cerrar conexiones inactivas
-    connectionTimeoutMillis: 2000, // Tiempo límite para conectar
+    max: 20,              
+    idleTimeoutMillis: 30000, 
+    connectionTimeoutMillis: 2000,
   });
 
 if (process.env.NODE_ENV !== 'production') globalForPg.pool = pool;
