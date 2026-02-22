@@ -1,26 +1,17 @@
-import { streamText, UIMessage, convertToModelMessages, createUIMessageStreamResponse } from 'ai';
+import { streamText, UIMessage, convertToModelMessages, createUIMessageStreamResponse} from 'ai';
 import { toBaseMessages, toUIMessageStream } from '@ai-sdk/langchain';
 import { google } from "@ai-sdk/google";
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { aiService } from '@/lib/services/ai-service';
 
 export const maxDuration = 15;
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
-
-  // const result = streamText({
-  //   model: google("gemini-2.5-flash"),
-  //   messages: await convertToModelMessages(messages),
-  // });
-
-  const modelAi = new ChatGoogleGenerativeAI({
-    model: "gemini-1.5-flash",
-    maxOutputTokens: 2048,
-    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-  })
+ const { chatId, messages } = await req.json();
+  const lastMessage = messages[messages.length - 1].content;
 
 
-
+  const modelAi = aiService.getGenerativeChat()
   const langchainMessages = await toBaseMessages(messages);
 
   try {
@@ -39,11 +30,4 @@ export async function POST(req: Request) {
   }
 
 
-
-  //   const stream = await modelAi.stream(langchainMessages);
-
-
-  //  return createUIMessageStreamResponse({
-  //     stream: toUIMessageStream(stream),
-  //   });
 }

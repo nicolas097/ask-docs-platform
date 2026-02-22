@@ -46,8 +46,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Archivo subido exitosamente", 
       filePath: publicUrl,
-      name: fileName,  // <--- Retornamos el nombre
-      size: fileSize   // <--- Retornamos el tamaño (bytes)
+      name: fileName, 
+      size: fileSize   
     });
 
     

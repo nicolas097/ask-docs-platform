@@ -1,18 +1,21 @@
 
 
 import {CharInterface } from "@/components/chat-interface"
+import { notFound } from "next/navigation";
+import { chatRepo } from "@/lib/repositories/instances";
+//import {ChatRepository} from "@/lib/repositories/chat-repository";
 
 interface PageProps {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ url?: string }> 
+  params: Promise<{ id: string }> 
 }
 
-export default async function ChatPage({ params, searchParams }: PageProps) {
-  const { id } = await params
-  const { url } = await searchParams 
-  
+export default async function ChatPage({ params }: PageProps) {
+  const { id: chatId } = await params
 
-  const currentPdfUrl = url || "" 
+const chat = await chatRepo.getFindIdDocumentChat(chatId);
 
-  return <CharInterface chatId={id} pdfUrl={currentPdfUrl} />
+
+if (!chat) return notFound;
+
+  return <CharInterface chatId={chatId} docId={chat.document_id} />
 }

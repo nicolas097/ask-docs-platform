@@ -17,13 +17,16 @@ interface ChatInterfaceProps {
 
   
 }
-export function CharInterface({ chatId, pdfUrl }: ChatInterfaceProps) {
+export function CharInterface({ chatId, docId }: { chatId: string, docId: string }) {
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = React.useState(1);
-  const decodedUrl = pdfUrl ? decodeURIComponent(pdfUrl) : "";
+  //const decodedUrl = pdfUrl ? decodeURIComponent(pdfUrl) : "";
   const [mounted, setMounted] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
+  const pdfViewUrl = `/api/pdf/${docId}`;
+
+  
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -38,7 +41,7 @@ export function CharInterface({ chatId, pdfUrl }: ChatInterfaceProps) {
       <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
        
         <div className="absolute top-2.5 right-4 z-30">
-          <DrawerDemo chatId={chatId} pdfUrl={pdfUrl} />
+          <DrawerDemo chatId={chatId} pdfUrl={pdfViewUrl} />
         </div>
       </div>
 
@@ -72,9 +75,9 @@ export function CharInterface({ chatId, pdfUrl }: ChatInterfaceProps) {
     minSize={40}
   >
     <div className="h-full w-full overflow-hidden bg-slate-100">
-      {decodedUrl ? (
+      {pdfViewUrl ? (
         <PDFViewerDynamic 
-          url={decodedUrl} 
+          url={pdfViewUrl} 
           targetPage={activePage} 
         />
       ) : (

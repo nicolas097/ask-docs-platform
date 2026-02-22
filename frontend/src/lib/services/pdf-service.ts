@@ -3,6 +3,7 @@ import { Storage } from "@google-cloud/storage";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import path from "path";
+import {getGCSBucket} from "@/lib/gcs";
 
 // Parche vital para Next.js 15 / pdf-parse
 if (typeof globalThis.DOMMatrix === 'undefined') {
@@ -13,13 +14,18 @@ if (typeof globalThis.DOMMatrix === 'undefined') {
 
 export async function processGCSFile(fileName: string) {
   try {
-    const keyPath = path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS!);
-    const storage = new Storage({
-      projectId: process.env.GCP_PROJECT_ID,
-      keyFilename: keyPath,
-    });
+    // const keyPath = path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS!);
+    // const storage = new Storage({
+    //   projectId: process.env.GCP_PROJECT_ID,
+    //   keyFilename: keyPath,
+    // });
 
-    const bucket = storage.bucket(process.env.GCP_BUCKET_NAME!);
+    // const bucket = storage.bucket(process.env.GCP_BUCKET_NAME!);
+
+     const bucket = await getGCSBucket(process.env.GCP_BUCKET_NAME!);
+
+    // console.log(bucket);
+
     const file = bucket.file(fileName);
 
     const [downloadedBuffer] = await file.download();
@@ -42,3 +48,5 @@ export async function processGCSFile(fileName: string) {
     throw error;
   }
 }
+
+
