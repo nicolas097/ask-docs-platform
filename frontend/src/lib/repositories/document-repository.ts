@@ -91,4 +91,26 @@ export class DocumentRepository extends BaseRepository {
 
     }
 
+    async findRelevantChunks(docId: string, embedding: number[], limit = 5) {
+        // Solo lógica de base de datos: pura y robusta
+        const query = `
+                SELECT 
+                content, 
+                (metadata->>'pageNumber')::int AS page_number 
+                FROM document_chunks 
+                WHERE document_id = $1 
+                ORDER BY embedding <=> $2::vector 
+                LIMIT $3
+            `;
+
+        // Convertimos el array de JS a un formato que Postgres entienda como vector
+        const res = await this.getExecutor().query(query, [
+            docId,
+            JSON.stringify(embedding),
+            limit
+        ]);
+
+        return res.rows;
+    }
+
 }

@@ -46,7 +46,7 @@ export function CharInterface({ chatId, docId }: { chatId: string, docId: string
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <ChatArea />
+        <ChatArea chatId={chatId} />
       </div>
     </div>
   );
@@ -64,7 +64,7 @@ export function CharInterface({ chatId, docId }: { chatId: string, docId: string
   >
   
     <div className="bg-background">
-      <ChatArea />
+      <ChatArea chatId={chatId}/>
     </div>
   </ResizablePanel>
 

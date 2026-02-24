@@ -1,17 +1,17 @@
 import { Pool, PoolClient } from 'pg';
 import { CreateMessageDTO } from '@/lib/types/database.types';
 import { CreateChatDTO } from '@/lib/types/database.types';
-import {BaseRepository} from "@/lib/repositories/base-repository"
+import { BaseRepository } from "@/lib/repositories/base-repository"
 
 
 
-export class ChatRepository extends BaseRepository{
+export class ChatRepository extends BaseRepository {
 
 
-   async create(data: CreateChatDTO, client?: PoolClient): Promise<string> {
+  async create(data: CreateChatDTO, client?: PoolClient): Promise<string> {
     // Si no hay título, usamos uno por defecto o las primeras palabras del prompt
     const title = data.title || 'Nueva conversación';
-    
+
     const query = `
       INSERT INTO chats (title, document_id, created_at)
       VALUES ($1, $2, NOW())
@@ -20,11 +20,11 @@ export class ChatRepository extends BaseRepository{
 
     const res = await this.getExecutor(client).query(
       query, [
-        title, 
-        data.documentId || null 
-      ]
+      title,
+      data.documentId || null
+    ]
     )
-    
+
     return res.rows[0].id;
   }
 
@@ -34,10 +34,10 @@ export class ChatRepository extends BaseRepository{
       VALUES ($1, $2, $3, NOW())
     `;
 
-      const res = await this.getExecutor(client).query(
+    await this.getExecutor(client).query(
       query, [
-        data.chatId, 
-      data.role, 
+      data.chatId,
+      data.role,
       data.content
       ]
     )
@@ -46,7 +46,7 @@ export class ChatRepository extends BaseRepository{
   async getHistory(chatId: string, client?: PoolClient) {
     const query = `
       SELECT role, content 
-      FROM messages 
+      FROM messages  
       WHERE chat_id = $1 
       ORDER BY created_at ASC
     `;
@@ -55,11 +55,22 @@ export class ChatRepository extends BaseRepository{
   }
 
 
- async getFindIdDocumentChat(chatId: string, client?: PoolClient) {
-        const query = `SELECT document_id FROM chats WHERE id = $1`;
-        const res = await this.getExecutor(client).query(query, [chatId]);
-        return res.rows[0];
-    }
+  async getFindIdDocumentChat(chatId: string, client?: PoolClient) {
+    const query = `SELECT document_id FROM chats WHERE id = $1`;
+    const res = await this.getExecutor(client).query(query, [chatId]);
+    return res.rows[0];
+  }
+
+
+  async updateTitle(chatId: string, title: string, client?: PoolClient): Promise<void> {
+    const query = `
+    UPDATE chats 
+    SET title = $1, updated_at = NOW() 
+    WHERE id = $2
+  `;
+
+    await this.getExecutor(client).query(query, [title, chatId]);
+  }
 }
 
 

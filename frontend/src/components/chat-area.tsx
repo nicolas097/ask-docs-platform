@@ -7,16 +7,28 @@ import { Badge } from "@/components/ui/badge"
 import { Spinner } from './ui/spinner';
 import { Button } from './ui/button';
 import { Icon, Send, CirclePause } from 'lucide-react';
+import { useChatContext } from '@/context/ChatContext';
+import { DefaultChatTransport } from 'ai';
+import { useParams } from 'next/navigation';
 
 
 
-export function ChatArea() {
+export function ChatArea({chatId}: {chatId: string}) {
   const [input, setInput] = useState('');
+ 
+ console.log(chatId);
+  const { messages, sendMessage, status, stop, error } = useChat({
+    transport: chatId ? new DefaultChatTransport({
+      api: '/api/chat',
+      body: { chatId } // Ya no usamos el fallback de texto
+    }) : undefined
+  });
 
-  const { messages, sendMessage, status, stop, error} = useChat();
+
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -39,7 +51,7 @@ export function ChatArea() {
 
               <span className="text-[10px] font-bold uppercase tracking-widest mb-1 px-1 text-slate-400 opacity-80">
                 {message.role === 'user' ? 'Tú' : 'Gemini'}
-              </span> 
+              </span>
 
               <div
                 className={`px-4 py-2 shadow-sm text-sm whitespace-pre-wrap ${message.role === 'user'
@@ -48,8 +60,8 @@ export function ChatArea() {
                   }`}
               >
                 {message.parts.map((part, i) => (
-                  part.type === 'text' && <div key={i}>{part.text}</div> 
-                ))} 
+                  part.type === 'text' && <div key={i}>{part.text}</div>
+                ))}
 
 
 
@@ -62,7 +74,7 @@ export function ChatArea() {
           </div>
         ))}
 
-     
+
 
         {(status === 'submitted' || status === 'streaming') && (
           <div>
@@ -71,27 +83,27 @@ export function ChatArea() {
               <CirclePause className='' />
             </Button>
           </div>
-        )} 
+        )}
 
         {error && (
           <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 flex flex-col items-start gap-2 animate-in fade-in slide-in-from-bottom-2">
             <div className="flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                <circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />
               </svg>
               <span className="font-semibold">Ocurrió un error</span>
             </div>
-            
+
             {/* Mostramos el mensaje que mandamos desde el backend (status 504) */}
             <p className="text-sm">
               {error.message || "El servidor tardó demasiado en responder."}
             </p>
 
-       
+
           </div>
         )}
 
-       
+
 
       </div>
 
