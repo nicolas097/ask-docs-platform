@@ -10,11 +10,12 @@ export const aiService = {
     });
   },
 
-  getGenerativeChat(){
+  getGenerativeChat() {
     return new ChatGoogleGenerativeAI({
-    model: "gemini-2.5-flash",
-    maxOutputTokens: 2048,
-    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      model: "gemini-2.5-flash",
+      maxOutputTokens: 2048,
+      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     });
-  }
+  },
+
 };
