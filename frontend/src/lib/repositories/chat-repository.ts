@@ -62,6 +62,14 @@ export class ChatRepository extends BaseRepository {
   }
 
 
+  async getFindTitle(chatId: string, client?: PoolClient){
+  const query = `SELECT title FROM chats WHERE id = $1`;
+    const res = await this.getExecutor(client).query(query, [chatId]);
+    return res.rows[0];
+  }
+
+
+
   async updateTitle(chatId: string, title: string, client?: PoolClient): Promise<void> {
     const query = `
     UPDATE chats 
@@ -75,7 +83,7 @@ export class ChatRepository extends BaseRepository {
 
    async getAllDocs (){
 
-        const query = `SELECT * FROM chats c `;
+        const query = `SELECT * FROM chats`;
 
         const res = await this.getExecutor().query(query);
 
