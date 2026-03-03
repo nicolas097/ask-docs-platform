@@ -1,4 +1,3 @@
-"use client"
 import { Calendar, Home, Inbox, InboxIcon, Search, Settings, Files, ChevronUp, User2, CircleArrowUpIcon, File } from "lucide-react"
 import { UploadButton } from "@/components/new-document-button"
 import {
@@ -27,38 +26,52 @@ import {
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Separator } from "@radix-ui/react-separator"
-
 // Menu items.
-const items = [
-  {
-    title: "Reporte-1",
-    url: "#",
-    icon: File,
-  },
-  {
-    title: "Reporte-2",
-    url: "#",
-    icon: File,
-  },
-  {
-    title: "Reporte-3",
-    url: "#",
-    icon: File,
-  },
-  {
-    title: "Reporte-4",
-    url: "#",
-    icon: File,
-  },
-  {
-    title: "Reporte-5",
-    url: "#",
-    icon: File,
-  },
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {chatRepo} from "@/lib/repositories/instances"
 
-]
 
-export function AppSidebar() {
+export const dynamic = "force-dynamic";
+// const items = [
+//   {
+//     title: "Reporte-1",
+//     url: "#",
+//     icon: File,
+//   },
+//   {
+//     title: "Reporte-2",
+//     url: "#",
+//     icon: File,
+//   },
+//   {
+//     title: "Reporte-3",
+//     url: "/workspace/chat/cc3b9b8a-c32c-45e2-bae2-7a219f0e4d1e",
+//     icon: File,
+//   },
+//   {
+//     title: "Reporte-4",
+//     url: "/workspace/chat/8de61e52-d5e8-415d-825b-fb0ae9d860f8",
+//     icon: File,
+//   },
+//   {
+//     title: "Reporte-5",
+//     url: "#",
+//     icon: File,
+//   },
+
+// ]
+
+
+
+export async function AppSidebar() {
+
+  const data = await chatRepo.getAllDocs();
+
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -75,26 +88,35 @@ export function AppSidebar() {
             <SidebarMenu>
               <Link href={"/workspace"} className="w-full">
                 <Button
-                
-                className="w-full justify-center gap-2" variant="outline"
+
+                  className="w-full justify-center gap-2" variant="outline"
 
 
-              >
-                
-                <CircleArrowUpIcon className="mr-2 h-4 w-4 text-black" />
-                <span className="text-gray-950">Nuevo PDF</span>
-              </Button>
+                >
+
+                  <CircleArrowUpIcon className="mr-2 h-4 w-4 text-black" />
+                  <span className="text-gray-950">Nuevo PDF</span>
+                </Button>
 
               </Link>
-            
 
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+
+              {data.map((item) => (
+                <SidebarMenuItem key={item.id} className="p-2">
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={`/workspace/chat/${item.id}`} className="flex items-center gap-2">
+                          <span>{item.title}</span>
+                        </a>
+                      </TooltipTrigger>
+
+
+                    <TooltipContent>
+                      {item.title}
+                    </TooltipContent>
+                    </Tooltip>
+
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

@@ -10,14 +10,17 @@ import { ChatArea } from "@/components/chat-area"
 import { DrawerDemo } from "./drawner-pdf";
 import dynamic from 'next/dynamic';
 import { PDFViewerDynamic } from "@/components/pdf-dynamic";
+import { Message } from "@/lib/types/database.types";
+
 
 interface ChatInterfaceProps {
-  chatId?: string
-  pdfUrl: string
+  chatId: string;
+  docId: string;
+  
 
   
 }
-export function CharInterface({ chatId, docId }: { chatId: string, docId: string }) {
+export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
   const isMobile = useIsMobile();
   const [activePage, setActivePage] = React.useState(1);
   //const decodedUrl = pdfUrl ? decodeURIComponent(pdfUrl) : "";
@@ -42,11 +45,11 @@ export function CharInterface({ chatId, docId }: { chatId: string, docId: string
        
         <div className="absolute top-2.5 right-4 z-30">
           <DrawerDemo chatId={chatId} pdfUrl={pdfViewUrl} />
-        </div>
+        </div>  
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <ChatArea chatId={chatId} />
+        <ChatArea chatId={chatId}/>
       </div>
     </div>
   );
