@@ -32,8 +32,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {chatRepo} from "@/lib/repositories/instances"
-
+import { chatRepo } from "@/lib/repositories/instances"
+import { ClientSidebarItem } from "@/components/client-siderbar"
+import { NewChatButton } from "@/components/ui/newchatButton"
 
 export const dynamic = "force-dynamic";
 // const items = [
@@ -71,7 +72,6 @@ export async function AppSidebar() {
 
   const data = await chatRepo.getAllDocs();
 
-
   return (
     <Sidebar>
       <SidebarHeader>
@@ -81,44 +81,12 @@ export async function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent>
-
-
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Link href={"/workspace"} className="w-full">
-                <Button
-
-                  className="w-full justify-center gap-2" variant="outline"
-
-
-                >
-
-                  <CircleArrowUpIcon className="mr-2 h-4 w-4 text-black" />
-                  <span className="text-gray-950">Nuevo PDF</span>
-                </Button>
-
-              </Link>
-
-
+              <NewChatButton />
               {data.map((item) => (
-                <SidebarMenuItem key={item.id} className="p-2">
-                  <SidebarMenuButton asChild>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <a href={`/workspace/chat/${item.id}`} className="flex items-center gap-2">
-                          <span>{item.title}</span>
-                        </a>
-                      </TooltipTrigger>
-
-
-                    <TooltipContent>
-                      {item.title}
-                    </TooltipContent>
-                    </Tooltip>
-
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <ClientSidebarItem key={item.id} item={item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

@@ -2,11 +2,13 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-siderbar"
 import { SiteHeader } from "@/components/site-headers"
 import { ChatProvider } from '@/context/ChatContext';
+import { TitleProvider } from "@/context/TitleDocuments";
 
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
+    <TitleProvider>
       <SidebarProvider
         style={
           {
@@ -22,6 +24,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </main>
         </SidebarInset>
       </SidebarProvider>
+
+    </TitleProvider>
 
 
   )
