@@ -45,7 +45,7 @@ export class ChatRepository extends BaseRepository {
 
   async getHistory(chatId: string, client?: PoolClient) {
     const query = `
-      SELECT role, content 
+      SELECT id, role, content 
       FROM messages  
       WHERE chat_id = $1 
       ORDER BY created_at ASC
@@ -71,7 +71,18 @@ export class ChatRepository extends BaseRepository {
 
     await this.getExecutor(client).query(query, [title, chatId]);
   }
+
+
+   async getAllDocs (){
+
+        const query = `SELECT * FROM chats c `;
+
+        const res = await this.getExecutor().query(query);
+
+        return res.rows;
+    }
 }
+
 
 
 

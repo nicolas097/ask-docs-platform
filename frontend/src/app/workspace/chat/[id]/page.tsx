@@ -3,6 +3,7 @@
 import {CharInterface } from "@/components/chat-interface"
 import { notFound } from "next/navigation";
 import { chatRepo } from "@/lib/repositories/instances";
+import { HistoryService } from "@/lib/services/history-service";
 //import {ChatRepository} from "@/lib/repositories/chat-repository";
 
 interface PageProps {
@@ -15,7 +16,9 @@ export default async function ChatPage({ params }: PageProps) {
 const chat = await chatRepo.getFindIdDocumentChat(chatId);
 
 
+
+
 if (!chat) return notFound;
 
-  return <CharInterface chatId={chatId} docId={chat.document_id} />
+  return <CharInterface chatId={chatId} docId={chat.document_id}  />
 }

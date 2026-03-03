@@ -31,3 +31,15 @@ export interface CreateMessageDTO {
   role: 'user' | 'assistant';
   content: string;
 }
+
+
+export interface Message {
+  id: string;
+  role: 'system' | 'user' | 'assistant' | 'data';
+  content: string; // Texto plano para la DB y LangChain
+  parts: {         // Arreglo de objetos para el frontend multimodal
+    type: 'text'; 
+    text: string 
+  }[];
+  createdAt?: Date;
+}

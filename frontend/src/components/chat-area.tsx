@@ -1,4 +1,3 @@
-'use client';
 
 import { useChat } from '@ai-sdk/react';
 import { useState, useRef, useEffect } from 'react';
@@ -8,32 +7,95 @@ import { Spinner } from './ui/spinner';
 import { Button } from './ui/button';
 import { Icon, Send, CirclePause } from 'lucide-react';
 import { useChatContext } from '@/context/ChatContext';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, UIMessage, UITools, } from 'ai';
 import { useParams } from 'next/navigation';
+import {chatRepo} from "@/lib/repositories/instances"
+import { Message } from "@/lib/types/database.types";
+
+import { useRouter } from 'next/navigation';
 
 
+interface ChatAreaProps {
+  chatId: string;
+}
 
-export function ChatArea({chatId}: {chatId: string}) {
+export function ChatArea({ chatId }: ChatAreaProps) {
+  const router = useRouter()
   const [input, setInput] = useState('');
- 
- console.log(chatId);
-  const { messages, sendMessage, status, stop, error } = useChat({
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
+
+  console.log(chatId);
+  const { messages, sendMessage, status, stop, error, setMessages  } = useChat({
     transport: chatId ? new DefaultChatTransport({
       api: '/api/chat',
-      body: { chatId } // Ya no usamos el fallback de texto
+      body: { chatId},
+      
+      // Ya no usamos el fallback de texto
     }) : undefined
   });
 
 
+  
 
   const scrollRef = useRef<HTMLDivElement>(null);
+const isInitialLoad = useRef(true);
+
+
+  useEffect(() => {
+
+
+
+    if (messages.length > 1) {
+      router.refresh();
+    }
+  }, [status, messages.length, router]);
 
   
+   
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (!chatId) {
+      setIsLoadingHistory(false);
+      return;
     }
-  }, [messages]);
+
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch(`/api/chat/history/${chatId}`);
+        if (response.ok) {
+          const pastMessages = await response.json();
+          // Inyectamos el historial en la memoria del SDK
+          if (pastMessages.length > 0) {
+            setMessages(pastMessages);
+          }
+        }
+      } catch (err) {
+        console.error('Error al cargar el historial:', err);
+      }finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    fetchHistory();
+  }, [chatId, setMessages]);
+
+useEffect(() => {
+    if (isLoadingHistory) return; 
+
+    const timeoutId = setTimeout(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollIntoView({ 
+          behavior: isInitialLoad.current ? 'auto' : 'smooth' 
+        });
+        
+        isInitialLoad.current = false; 
+      }
+    }, 100); 
+
+    return () => clearTimeout(timeoutId);
+  }, [messages, isLoadingHistory]);
+
+
 
   return (
 
@@ -59,9 +121,9 @@ export function ChatArea({chatId}: {chatId: string}) {
                   : 'bg-slate-200 text-slate-800 rounded-2xl rounded-tl-none'
                   }`}
               >
-                {message.parts.map((part, i) => (
+                {message.parts?.map((part, i) => (
                   part.type === 'text' && <div key={i}>{part.text}</div>
-                ))}
+                )) } 
 
 
 
