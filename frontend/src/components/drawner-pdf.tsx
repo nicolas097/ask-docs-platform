@@ -23,9 +23,12 @@ import { useState } from "react"
 
 interface ChatInterfaceProps {
   chatId?: string
-  pdfUrl: string
+  pdfUrl: string;
+  updateTrigger: number;
+
+
 }
-export function DrawerDemo({ chatId, pdfUrl }: ChatInterfaceProps) {
+export function DrawerDemo({ chatId, pdfUrl, updateTrigger }: ChatInterfaceProps) {
 
   const [activePage, setActivePage] = React.useState(1);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -53,7 +56,7 @@ export function DrawerDemo({ chatId, pdfUrl }: ChatInterfaceProps) {
           <div>
             <div className="h-[58vh]">
               {pdfUrl ? (
-                <PDFViewerDynamic url={decodedUrl} targetPage={activePage}   />
+                <PDFViewerDynamic url={decodedUrl} targetPage={activePage} chatId={chatId} updateTrigger={updateTrigger} />
               ) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   No se ha cargado ningún PDF

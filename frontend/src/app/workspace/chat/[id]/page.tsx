@@ -15,7 +15,7 @@ export default async function ChatPage({ params }: PageProps) {
   const { id: chatId } = await params
 
   const chat = await chatRepo.getFindIdDocumentChat(chatId);
-  const TitleChat = await chatRepo.getFindTitle(chatId)
+  const TitleChat = await chatRepo.getFindTitle(chatId);
 
 
 

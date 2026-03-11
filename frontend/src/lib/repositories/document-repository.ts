@@ -1,6 +1,5 @@
 import { Pool, PoolClient } from "pg";
-import { CreateDocumentDTO } from '@/lib/types/database.types';
-import { InsertChunkDTO } from "@/lib/types/database.types";
+import { CreateDocumentDTO,  InsertChunkDTO} from '@/lib/types/database.types';
 import { pool as defaultPool } from "@/lib/db";
 import { BaseRepository } from "@/lib/repositories/base-repository";
 
@@ -98,7 +97,7 @@ export class DocumentRepository extends BaseRepository {
                 content, 
                 (metadata->>'pageNumber')::int AS page_number 
                 FROM document_chunks 
-                WHERE document_id = $1 
+                WHERE document_id = $1  
                 ORDER BY embedding <=> $2::vector 
                 LIMIT $3
             `;
@@ -109,7 +108,6 @@ export class DocumentRepository extends BaseRepository {
             JSON.stringify(embedding),
             limit
         ]);
-
         return res.rows;
     }
 
