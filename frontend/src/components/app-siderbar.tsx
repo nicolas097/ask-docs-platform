@@ -74,7 +74,7 @@ export async function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader >
         <div className="flex flex-row p-2 space-x-2">
           <Files />
           <h1 className="font-medium">Ask-Docs</h1>

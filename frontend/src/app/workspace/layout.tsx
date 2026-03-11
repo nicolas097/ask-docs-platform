@@ -1,7 +1,6 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-siderbar"
 import { SiteHeader } from "@/components/site-headers"
-import { ChatProvider } from '@/context/ChatContext';
 import { TitleProvider } from "@/context/TitleDocuments";
 
 

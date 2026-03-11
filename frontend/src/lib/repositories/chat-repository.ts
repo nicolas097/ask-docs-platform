@@ -28,20 +28,23 @@ export class ChatRepository extends BaseRepository {
     return res.rows[0].id;
   }
 
-  async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<void> {
-    const query = `
-      INSERT INTO messages (chat_id, role, content, created_at)
-      VALUES ($1, $2, $3, NOW())
-    `;
+async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<string> {
+  const query = `
+    INSERT INTO messages (chat_id, role, content, created_at)
+    VALUES ($1, $2, $3, NOW())
+    RETURNING id
+  `;
 
-    await this.getExecutor(client).query(
-      query, [
+  const res = await this.getExecutor(client).query(
+    query, [
       data.chatId,
       data.role,
       data.content
-      ]
-    )
-  }
+    ]
+  );
+
+  return res.rows[0].id;
+}
 
   async getHistory(chatId: string, client?: PoolClient) {
     const query = `

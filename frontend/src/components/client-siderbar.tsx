@@ -86,9 +86,9 @@ export function ClientSidebarItem({ item }: { item: ChatItem }) {
                 <SidebarMenuButton asChild>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Link href={`/workspace/chat/${item.id}`} 
-                            className="flex items-center gap-2"
-                            onClick={() => setTitle(item.title)}>
+                            <Link href={`/workspace/chat/${item.id}`}
+                                className="flex items-center gap-2"
+                                onClick={() => setTitle(item.title)}>
                                 <span>{item.title}</span>
                             </Link>
                         </TooltipTrigger>

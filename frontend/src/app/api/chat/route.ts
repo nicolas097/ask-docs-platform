@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       stream: toUIMessageStream(stream),
     });
 
+
   } catch (error: any) {
     // Manejo técnico de errores de red o timeouts en Santiago
     if (error.name === 'TimeoutError' || error.name === 'AbortError') {

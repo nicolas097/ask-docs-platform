@@ -16,12 +16,13 @@ import { Message } from "@/lib/types/database.types";
 interface ChatInterfaceProps {
   chatId: string;
   docId: string;
-  
 
-  
+
+
 }
 export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
   const isMobile = useIsMobile();
+  const [updateTrigger, setUpdateTrigger] = useState(0);
   const [activePage, setActivePage] = React.useState(1);
   //const decodedUrl = pdfUrl ? decodeURIComponent(pdfUrl) : "";
   const [mounted, setMounted] = useState(false);
@@ -29,7 +30,8 @@ export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
 
   const pdfViewUrl = `/api/pdf/${docId}`;
 
-  
+  console.log('Trigger', updateTrigger);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -38,59 +40,61 @@ export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
   }
 
   if (isMobile) {
-  return (
-    <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
-   
-      <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
-       
-        <div className="absolute top-2.5 right-4 z-30">
-          <DrawerDemo chatId={chatId} pdfUrl={pdfViewUrl} />
-        </div>  
-      </div>
+    return (
+      <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
 
-      <div className="flex-1 overflow-hidden">
-        <ChatArea chatId={chatId}/>
-      </div>
-    </div>
-  );
-}
-  return (
+        <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
 
-<ResizablePanelGroup 
-  direction="horizontal"
-  className="h-screen w-full border overflow-hidden" 
->
-  {/* PANEL 1: CHAT INTERFACE */}
-  <ResizablePanel 
-    defaultSize={40} 
-    minSize={25}
-  >
-  
-    <div className="bg-background">
-      <ChatArea chatId={chatId}/>
-    </div>
-  </ResizablePanel>
-
-  <ResizableHandle withHandle />
-
-  <ResizablePanel 
-    defaultSize={60} 
-    minSize={40}
-  >
-    <div className="h-full w-full overflow-hidden bg-slate-100">
-      {pdfViewUrl ? (
-        <PDFViewerDynamic 
-          url={pdfViewUrl} 
-          targetPage={activePage} 
-        />
-      ) : (
-        <div className="flex items-center justify-center h-full text-muted-foreground">
-          No se ha cargado ningún PDF
+          <div className="absolute top-2.5 right-4 z-30">
+            <DrawerDemo chatId={chatId} pdfUrl={pdfViewUrl} updateTrigger={updateTrigger} />
+          </div>
         </div>
-      )}
-    </div>
-  </ResizablePanel>
-</ResizablePanelGroup>
+
+        <div className="flex-1 overflow-hidden">
+          <ChatArea chatId={chatId} onAiFinished={() => setUpdateTrigger(Date.now())}/>
+        </div>
+      </div>
+    );
+  }
+  return (
+
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="h-screen w-full border overflow-hidden"
+    >
+      {/* PANEL 1: CHAT INTERFACE */}
+      <ResizablePanel
+        defaultSize={40}
+        minSize={25}
+      >
+
+        <div className="bg-background">
+          <ChatArea chatId={chatId} onAiFinished={() => setUpdateTrigger(Date.now())}/>
+        </div>
+      </ResizablePanel>
+
+      <ResizableHandle withHandle />
+
+      <ResizablePanel
+        defaultSize={60}
+        minSize={40}
+      >
+        <div className="h-full w-full overflow-hidden bg-slate-100">
+          {pdfViewUrl ? (
+            <PDFViewerDynamic
+              url={pdfViewUrl}
+              targetPage={activePage}
+              chatId={chatId}
+              updateTrigger={updateTrigger}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              No se ha cargado ningún PDF
+            </div>
+          )}
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
 
 
   )

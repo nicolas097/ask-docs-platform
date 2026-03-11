@@ -1,13 +1,11 @@
 import { Pool } from 'pg';
 
-// Declaramos una variable global para evitar múltiples instancias en desarrollo
 const globalForPg = global as unknown as { pool: Pool };
 
 export const pool =
   globalForPg.pool ||
   new Pool({
     connectionString: process.env.DATABASE_URL,
-    // Configuraciones Enterprise:
     max: 20,              
     idleTimeoutMillis: 30000, 
     connectionTimeoutMillis: 2000,

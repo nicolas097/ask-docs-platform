@@ -43,3 +43,10 @@ export interface Message {
   }[];
   createdAt?: Date;
 }
+
+export interface MessageSource {
+  id?: string;
+  message_id: string,
+  documentId: string,
+  page_number : number,
+}
