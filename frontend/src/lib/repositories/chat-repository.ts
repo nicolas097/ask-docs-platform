@@ -2,6 +2,7 @@ import { Pool, PoolClient } from 'pg';
 import { CreateMessageDTO } from '@/lib/types/database.types';
 import { CreateChatDTO } from '@/lib/types/database.types';
 import { BaseRepository } from "@/lib/repositories/base-repository"
+import { notFound } from 'next/navigation';
 
 
 
@@ -28,23 +29,23 @@ export class ChatRepository extends BaseRepository {
     return res.rows[0].id;
   }
 
-async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<string> {
-  const query = `
+  async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<string> {
+    const query = `
     INSERT INTO messages (chat_id, role, content, created_at)
     VALUES ($1, $2, $3, NOW())
     RETURNING id
   `;
 
-  const res = await this.getExecutor(client).query(
-    query, [
+    const res = await this.getExecutor(client).query(
+      query, [
       data.chatId,
       data.role,
       data.content
     ]
-  );
+    );
 
-  return res.rows[0].id;
-}
+    return res.rows[0].id;
+  }
 
   async getHistory(chatId: string, client?: PoolClient) {
     const query = `
@@ -59,14 +60,20 @@ async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<string> {
 
 
   async getFindIdDocumentChat(chatId: string, client?: PoolClient) {
-    const query = `SELECT document_id FROM chats WHERE id = $1`;
-    const res = await this.getExecutor(client).query(query, [chatId]);
-    return res.rows[0];
+    try {
+      const query = `SELECT document_id FROM chats WHERE id = $1`;
+      const res = await this.getExecutor(client).query(query, [chatId]);
+      return res.rows[0];
+    } catch (error) {
+      notFound();
+
+    }
+
   }
 
 
-  async getFindTitle(chatId: string, client?: PoolClient){
-  const query = `SELECT title FROM chats WHERE id = $1`;
+  async getFindTitle(chatId: string, client?: PoolClient) {
+    const query = `SELECT title FROM chats WHERE id = $1`;
     const res = await this.getExecutor(client).query(query, [chatId]);
     return res.rows[0];
   }
@@ -84,14 +91,14 @@ async addMessage(data: CreateMessageDTO, client?: PoolClient): Promise<string> {
   }
 
 
-   async getAllDocs (){
+  async getAllDocs() {
 
-        const query = `SELECT * FROM chats`;
+    const query = `SELECT * FROM chats`;
 
-        const res = await this.getExecutor().query(query);
+    const res = await this.getExecutor().query(query);
 
-        return res.rows;
-    }
+    return res.rows;
+  }
 }
 
 
