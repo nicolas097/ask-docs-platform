@@ -1,6 +1,6 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-siderbar"
-import { SiteHeader } from "@/components/site-headers"
+import {SiteHeader} from "@/components/site-headers"
 import { TitleProvider } from "@/context/TitleDocuments";
 
 
@@ -18,9 +18,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <AppSidebar />
         <SidebarInset>
           <SiteHeader />
-          <main>
-            {children}
-          </main>
+        <main>
+          {children}
+        </main>
         </SidebarInset>
       </SidebarProvider>
 

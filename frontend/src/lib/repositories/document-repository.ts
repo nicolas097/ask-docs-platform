@@ -2,6 +2,7 @@ import { Pool, PoolClient } from "pg";
 import { CreateDocumentDTO,  InsertChunkDTO} from '@/lib/types/database.types';
 import { pool as defaultPool } from "@/lib/db";
 import { BaseRepository } from "@/lib/repositories/base-repository";
+import { notFound } from "next/navigation";
 
 export class DocumentRepository extends BaseRepository {
 

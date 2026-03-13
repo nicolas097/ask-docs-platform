@@ -10,10 +10,10 @@ export class SourceRepository extends BaseRepository {
 
     async insertMessageSource(data: MessageSource, client?: PoolClient): Promise<void> {
         const query = `
-    INSERT INTO message_sources (message_id, document_id, page_number, created_at)
-    VALUES ($1, $2, $3, NOW())
-    ON CONFLICT (message_id, document_id, page_number ) DO NOTHING;
-  `;
+        INSERT INTO message_sources (message_id, document_id, page_number, created_at)
+        VALUES ($1, $2, $3, NOW())
+        ON CONFLICT (message_id, document_id, page_number ) DO NOTHING;
+    `;
 
         try {
             await this.getExecutor(client).query(query, [

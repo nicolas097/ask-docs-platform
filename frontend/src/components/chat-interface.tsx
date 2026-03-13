@@ -11,6 +11,7 @@ import { DrawerDemo } from "./drawner-pdf";
 import dynamic from 'next/dynamic';
 import { PDFViewerDynamic } from "@/components/pdf-dynamic";
 import { Message } from "@/lib/types/database.types";
+import { useChatStore } from "@/store/useChatStore";
 
 
 interface ChatInterfaceProps {
@@ -22,6 +23,8 @@ interface ChatInterfaceProps {
 }
 export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
   const isMobile = useIsMobile();
+  const setChatData = useChatStore((state) => state.setChatData);
+  const triggerPdfUpdate = useChatStore((state) => state.triggerPdfUpdate);
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const [activePage, setActivePage] = React.useState(1);
   //const decodedUrl = pdfUrl ? decodeURIComponent(pdfUrl) : "";
@@ -31,6 +34,11 @@ export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
   const pdfViewUrl = `/api/pdf/${docId}`;
 
   console.log('Trigger', updateTrigger);
+
+
+  useEffect(() => {
+    setChatData(chatId, pdfViewUrl);
+  }, [chatId, pdfViewUrl, setChatData]);
 
   useEffect(() => {
     setIsClient(true);
@@ -43,14 +51,14 @@ export function CharInterface({ chatId, docId }: ChatInterfaceProps) {
     return (
       <div className="relative h-[100dvh] w-full overflow-hidden bg-background flex flex-col">
 
-        <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
+        {/* <div className="h-5 w-full  bg-background flex items-center px-4 relative z-20">
 
           <div className="absolute top-2.5 right-4 z-30">
             <DrawerDemo chatId={chatId} pdfUrl={pdfViewUrl} updateTrigger={updateTrigger} />
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden">  
           <ChatArea chatId={chatId} onAiFinished={() => setUpdateTrigger(Date.now())}/>
         </div>
       </div>
