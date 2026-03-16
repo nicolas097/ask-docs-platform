@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient } from "../../../node_modules/@types/pg";
 import { CreateDocumentDTO } from '@/lib/types/database.types';
 import { MessageSource } from "@/lib/types/database.types";
 import { pool as defaultPool } from "@/lib/db";

@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient } from "../../../node_modules/@types/pg";
 import { CreateDocumentDTO,  InsertChunkDTO} from '@/lib/types/database.types';
 import { pool as defaultPool } from "@/lib/db";
 import { BaseRepository } from "@/lib/repositories/base-repository";
@@ -92,7 +92,7 @@ export class DocumentRepository extends BaseRepository {
     }
 
     async findRelevantChunks(docId: string, embedding: number[], limit = 5) {
-        // Solo lógica de base de datos: pura y robusta
+        
         const query = `
                 SELECT 
                 content, 

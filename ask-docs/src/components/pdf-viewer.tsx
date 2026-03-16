@@ -121,7 +121,7 @@ useEffect(() => {
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-
+{/* 
         <div className='flex items-center justify-center gap-2 sm:gap-4 mt-6 mb-4 w-full px-2'>
           <Button
             variant="outline"
@@ -146,7 +146,7 @@ useEffect(() => {
           >
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
-        </div>
+        </div> */}
 
         <span className="text-xs font-mono text-slate-500">PÁGS: {numPages || '---'}</span>
       </div>

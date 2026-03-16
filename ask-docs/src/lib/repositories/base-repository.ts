@@ -1,5 +1,5 @@
 // frontend/src/lib/repositories/base-repository.ts
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient } from "../../../node_modules/@types/pg";
 
 export abstract class BaseRepository {
 protected pool: Pool;

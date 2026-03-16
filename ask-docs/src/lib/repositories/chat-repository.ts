@@ -1,4 +1,4 @@
-import { Pool, PoolClient } from 'pg';
+import { Pool, PoolClient } from '../../../node_modules/@types/pg';
 import { CreateMessageDTO } from '@/lib/types/database.types';
 import { CreateChatDTO } from '@/lib/types/database.types';
 import { BaseRepository } from "@/lib/repositories/base-repository"
@@ -66,7 +66,6 @@ export class ChatRepository extends BaseRepository {
       return res.rows[0];
     } catch (error) {
       notFound();
-
     }
 
   }
