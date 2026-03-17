@@ -10,7 +10,7 @@ import { DefaultChatTransport, UIMessage, UITools, } from 'ai';
 import { useParams } from 'next/navigation';
 import { chatRepo } from "@/lib/repositories/instances"
 import { Message } from "@/lib/types/database.types";
-
+import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/navigation';
 
 
@@ -102,7 +102,9 @@ export function ChatArea({ chatId, onAiFinished }: ChatAreaProps) {
     <div className="flex flex-col w-full h-[81vh] bg-background overflow-hidden relative">
 
 
+    
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-8 pt-20">
+        
 
         {messages.map((message) => (
           <div
@@ -121,8 +123,10 @@ export function ChatArea({ chatId, onAiFinished }: ChatAreaProps) {
                   : 'bg-slate-200 text-slate-800 rounded-2xl rounded-tl-none'
                   }`}
               >
+                
                 {message.parts?.map((part, i) => (
-                  part.type === 'text' && <div key={i}>{part.text}</div>
+                  part.type === 'text' && <div key={i} className='prose dark:prose-invert'>
+                   <ReactMarkdown>{part.text}</ReactMarkdown></div>
                 ))}
 
 
