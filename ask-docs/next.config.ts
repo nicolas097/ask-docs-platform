@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/',
-        destination: '/login',
-        permanent: true,
+        destination: '/workspace',
+        permanent: false,
       },
     ]
   },
