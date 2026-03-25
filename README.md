@@ -11,7 +11,7 @@
 
 ## 📸 Demo
 *(Demonstration querying statistical data from official reports)*
-![Ask-Docs Demo](./public/tutorial-ask-docs.gif)
+![Ask-Docs Demo](./ask-docs/public/demo.gif)
 
 ## Key Features (Engineering Focus)
 - **Advanced RAG Pipeline:** Utilizes LangChain to chunk, embed, and query document data with high semantic accuracy via `pgvector`.
